@@ -52,9 +52,6 @@ export default {
                 this.$router.push({ name: 'Home' })
               }
             })
-            .catch(e => {
-              this.$comUtils.showErrorMessage(this, '登录失败')
-            })
         } else {
           return false
         }
