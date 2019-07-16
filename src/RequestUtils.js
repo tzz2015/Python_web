@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export default {
-  handleResp: function (context, resp, resolve, reject) {
+  handleResp: function (context, resp, resolve, reject, isToLogin) {
     console.log(resp.data)
     // 正确返回
     if (resp.data.code === 200) {
@@ -9,7 +9,9 @@ export default {
       // 没有登录
     } else if (resp.data.code === 303) {
       // 没有登录跳转到登录页面
-      window.location.href = 'http://localhost:8090/' + 'login'
+      if (isToLogin === undefined || isToLogin) {
+        context.$router.push({name: 'Login'})
+      }
       reject(new Error('没有登录'))
       // 没有权限
     } else if (resp.data.code === 400) {
@@ -25,7 +27,7 @@ export default {
       reject(new Error('其他错误'))
     }
   },
-  commonRequest: function (context, method, url, params) {
+  commonRequest: function (context, method, url, params, isToLogin) {
     return new Promise((resolve, reject) => {
       axios({
         method: method,
@@ -36,27 +38,28 @@ export default {
       })
         .then((resp) => {
           if (this.handleResp) {
-            this.handleResp(context, resp, resolve, reject)
+            this.handleResp(context, resp, resolve, reject, isToLogin)
           } else {
             resolve(resp)
           }
         })
         .catch((e) => {
+          context.$comUtils.showErrorMessage(context, '网络异常，请稍后重试')
           console.log(e)
           reject(e)
         })
     })
   },
-  get: function (context, url, params) {
-    return this.commonRequest(context, 'get', url, params)
+  get: function (context, url, params, isToLogin) {
+    return this.commonRequest(context, 'get', url, params, isToLogin)
   },
-  post: function (context, url, params) {
-    return this.commonRequest(context, 'post', url, params)
+  post: function (context, url, params, isToLogin) {
+    return this.commonRequest(context, 'post', url, params, isToLogin)
   },
-  put: function (context, url, params) {
-    return this.commonRequest(context, 'put', url, params)
+  put: function (context, url, params, isToLogin) {
+    return this.commonRequest(context, 'put', url, params, isToLogin)
   },
-  delete: function (context, url, params) {
-    return this.commonRequest(context, 'delete', url, params)
+  delete: function (context, url, params, isToLogin) {
+    return this.commonRequest(context, 'delete', url, params, isToLogin)
   }
 }

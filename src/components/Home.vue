@@ -72,16 +72,16 @@ export default {
       dialogTitle: '添加成员',
       rules: {
         username: [
-          { required: true, message: '请输入正确的用户名', trigger: 'blur' }
+          {required: true, message: '请输入正确的用户名', trigger: 'blur'}
         ],
         password: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' }
+          {required: true, message: '请输入登录密码', trigger: 'blur'}
         ],
         confirm_password: [
-          { required: true, message: '请输入确认密码', trigger: 'blur' }
+          {required: true, message: '请输入确认密码', trigger: 'blur'}
         ],
         email: [
-          { type: 'email', required: true, message: '请输入正确的邮箱地址', trigger: 'blur' }
+          {type: 'email', required: true, message: '请输入正确的邮箱地址', trigger: 'blur'}
         ]
       }
     }
@@ -102,7 +102,7 @@ export default {
     },
     // 获取列表
     getUserList () {
-      this.$requestUtils.get(this, 'user_list')
+      this.$requestUtils.get(this, 'user_list', null, false)
         .then(res => {
           if (res) {
             console.log(res.data)
