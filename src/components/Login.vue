@@ -5,10 +5,10 @@
     </div>
     <el-form ref="login" :model="form" label-width="70px" :rules="rules" style="margin-top: 20px">
       <el-form-item label="用户名:" prop="username">
-        <el-input v-model="form.username" placeholder="请输入用户名" ></el-input>
+        <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item label="密码:" prop="password">
-        <el-input v-model="form.password" placeholder="密码" type="password" ></el-input>
+        <el-input v-model="form.password" placeholder="密码" type="password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('login')">提交</el-button>
@@ -27,10 +27,10 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          {required: true, message: '请输入用户名', trigger: 'blur'}
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
+          {required: true, message: '请输入密码', trigger: 'blur'}
         ]
       }
     }
@@ -49,7 +49,7 @@ export default {
               if (res) {
                 // this.$comUtils.showSuccessMessage(this, res)
                 this.$store.commit('updateUserInfo', res.data)
-                this.$router.push({ name: 'Home' })
+                this.$router.push({name: 'Home'})
               }
             })
         } else {

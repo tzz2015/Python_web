@@ -102,7 +102,7 @@ export default {
     },
     // 获取列表
     getUserList () {
-      this.$requestUtils.get(this, 'userList')
+      this.$requestUtils.get(this, 'user_list')
         .then(res => {
           if (res) {
             console.log(res.data)
