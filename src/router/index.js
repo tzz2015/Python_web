@@ -6,7 +6,6 @@ import NotFund from '@/components/NotFund'
 import NotPermission from '@/components/NotPermission'
 import SysError from '@/components/SysError'
 
-
 Vue.use(Router)
 
 export default new Router({
