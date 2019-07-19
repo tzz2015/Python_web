@@ -35,7 +35,8 @@
       <div class="character">{{ letter.char }}</div>
       <span></span>
     </span>
-  </div>`})
+  </div>`
+  })
   export default {
     name: 'Home',
     data () {

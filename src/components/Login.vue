@@ -22,8 +22,8 @@ export default {
   data () {
     return {
       form: {
-        username: 'root',
-        password: 'root'
+        username: 'lyf',
+        password: 'lyf'
       },
       rules: {
         username: [
@@ -47,6 +47,7 @@ export default {
           this.$requestUtils.post(this, '/login', parm)
             .then(res => {
               if (res) {
+                console.log(res)
                 // this.$comUtils.showSuccessMessage(this, res)
                 this.$store.commit('updateUserInfo', res.data)
                 this.$router.push({name: 'Home'})

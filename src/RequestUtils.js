@@ -31,7 +31,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios({
         method: method,
-        baseURL: '/api/',
+        baseURL: process.env.API_HOST,
         url: url,
         params: (method === 'get' ? params : null),
         data: (method !== 'get' ? params : null)
