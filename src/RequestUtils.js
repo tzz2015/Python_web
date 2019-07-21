@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 
 export default {
   handleResp: function (context, resp, resolve, reject, isToLogin) {
@@ -33,8 +34,8 @@ export default {
         method: method,
         baseURL: process.env.API_HOST,
         url: url,
-        params: (method === 'get' ? params : null),
-        data: (method !== 'get' ? params : null)
+        params: (method === 'get' ? qs.stringify(params) : null),
+        data: (method !== 'get' ? qs.stringify(params) : null)
       })
         .then((resp) => {
           if (this.handleResp) {
