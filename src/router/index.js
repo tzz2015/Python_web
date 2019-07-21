@@ -5,6 +5,10 @@ import Home from '@/components/Home'
 import NotFund from '@/components/NotFund'
 import NotPermission from '@/components/NotPermission'
 import SysError from '@/components/SysError'
+import AdminHome from '@/components/admin/AdminHome'
+import HomeInfo from '@/components/admin/HomeInfo'
+import UserList from '@/components/admin/UserList'
+import MenuList from '@/components/admin/MenuList'
 
 Vue.use(Router)
 
@@ -15,6 +19,25 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/admin',
+      component: AdminHome,
+      children: [
+        {
+          path: '',
+          name: 'HomeInfo',
+          component: HomeInfo
+        },{
+          path: 'user',
+          name: 'UserList',
+          component: UserList
+        },{
+          path: 'menu',
+          name: 'MenuList',
+          component: MenuList
+        }
+      ]
     },
     {
       path: '/login',

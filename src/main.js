@@ -22,4 +22,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-Vue.http.options.emulateJSON = true
