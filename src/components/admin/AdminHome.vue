@@ -13,12 +13,12 @@
         <el-dropdown trigger="click">
           <span class="el-dropdown-link userinfo-inner">
             <i class="iconfont icon-user"></i>
-             刘宇飞
+            {{ userName }}
             <i class="iconfont icon-down"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>修改密码</el-dropdown-item>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item @click.native="show_change_pw=true">修改密码</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -42,14 +42,47 @@
 
       <!--右侧内容区-->
       <section class="content-container">
-        <div class="grid-content bg-purple-light">
-          <transition name="fade" mode="out-in">
-              <router-view></router-view>
-          </transition>
+        <div>
+            <router-view></router-view>
         </div>
       </section>
 
     </el-col>
+    <el-dialog
+      center
+      title="修改密码"
+      :visible.sync="show_change_pw"
+      width="30%">
+      <el-row style="padding-left: 20px;padding-right: 20px;margin-top: 10px">
+        <el-col :span="4"><a>旧密码</a></el-col>
+        <el-col :span="2">
+          <img v-if="visible" @click="changePass" src="../../assets/image/xianshi.png" width="20px" height="20px"/>
+          <img v-else @click="changePass" src="../../assets/image/yincang.png" width="20px" height="20px"/>
+        </el-col>
+        <el-col :span="18" style="padding-left: 10px;margin-top: -5px">
+          <el-input v-if="visible" type="text" v-model="formPassword.oldPassword" size='small'
+                    placeholder="请输入旧密码"></el-input>
+          <el-input v-else type="password" v-model="formPassword.oldPassword" size='small'
+                    placeholder="请输入旧密码"></el-input>
+        </el-col>
+      </el-row>
+      <el-row style="padding-left: 20px;padding-right: 20px;margin-top: 20px">
+        <el-col :span="4"><a>新密码</a></el-col>
+        <el-col :span="2">
+          <img v-if="visible" @click="changePass" src="../../assets/image/xianshi.png" width="20px" height="20px"/>
+          <img v-else @click="changePass" src="../../assets/image/yincang.png" width="20px" height="20px"/>
+        </el-col>
+        <el-col :span="18" style="padding-left: 10px;margin-top: -5px">
+          <el-input v-if="visible" type="text" v-model="formPassword.newPassword" size='small'
+                    placeholder="请输入新密码"></el-input>
+          <el-input v-else type="password" v-model="formPassword.newPassword" size='small'
+                    placeholder="请输入新密码"></el-input>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="show_change_pw = false">取 消</el-button>
+        <el-button type="primary" @click="change_password">确 定</el-button></span>
+    </el-dialog>
   </el-row>
 </template>
 
@@ -60,6 +93,12 @@ export default {
     return {
       defaultActiveIndex: '1',
       collapsed: true,
+      show_change_pw: false,
+      formPassword: {
+        oldPassword: '',
+        newPassword: ''
+      },
+      visible: false,
       // 菜单列表
       menuList: [
         {
@@ -83,9 +122,65 @@ export default {
       ]
     }
   },
+  computed: {
+    userName () {
+      if (this.$store.state.username) {
+        return this.$store.state.username
+      } else {
+        return ''
+      }
+    }
+  },
+  created () {
+    this.getUserInfo()
+  },
   methods: {
     handleSelect (index) {
       this.$router.replace({name: index})
+    },
+    getUserInfo () {
+      this.$requestUtils.post(this, '/user_info')
+        .then(res => {
+          if (res) {
+            this.$store.commit('updateUserInfo', res.data)
+          }
+        })
+    },
+    logout () {
+      this.$requestUtils.post(this, '/logout')
+        .then(res => {
+          if (res) {
+            this.handleSelect('Login')
+          }
+        })
+    },
+    changePass () {
+      this.visible = !this.visible
+    },
+    change_password () {
+      if (!this.formPassword.oldPassword) {
+        this.$comUtils.showErrorMessage(this, '请输入旧密码')
+        return
+      }
+      if (!this.formPassword.newPassword) {
+        this.$comUtils.showErrorMessage(this, '请输入新密码')
+        return
+      }
+      if (this.formPassword.newPassword === this.formPassword.oldPassword) {
+        this.$comUtils.showErrorMessage(this, '新密码和旧密码一致')
+        return
+      }
+      this.$requestUtils.post(this, 'change_password', this.formPassword)
+        .then(resp => {
+          this.$comUtils.showSuccessMessage(this, '修改成功')
+          this.show_change_pw = false
+          this.formPassword.newPassword = ''
+          this.formPassword.oldPassword = ''
+          this.handleSelect('Login')
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
 }
@@ -146,10 +241,10 @@ export default {
       overflow: hidden;
     }
     .el-input__icon .iconfont .icon-yincang {
-      background-image: url("../../assets/logo.png");
+      background-image: url("../../assets/image/xianshi.png");
     }
     .el-input__icon .iconfont .icon-xianshi {
-      background-image: url("../../assets/logo.png");
+      background-image: url("../../assets/image/yincang.png");
     }
     aside {
       min-width: 50px;
@@ -210,7 +305,7 @@ export default {
       background: #f0f2f5;
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 3%;
 
       .content-wrapper {
         background-color: #fff;

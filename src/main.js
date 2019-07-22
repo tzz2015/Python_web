@@ -8,9 +8,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 import CommonUtils from './CommonUtils.js'
 import RequestUtils from './RequestUtils'
 import store from './store'
+import vueCookie from 'vue-cookie'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(vueCookie)
 Vue.prototype.$comUtils = CommonUtils
 Vue.prototype.$vHOST = '/api/'
 Vue.prototype.$requestUtils = RequestUtils

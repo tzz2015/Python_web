@@ -28,11 +28,11 @@ export default new Router({
           path: '',
           name: 'HomeInfo',
           component: HomeInfo
-        },{
+        }, {
           path: 'user',
           name: 'UserList',
           component: UserList
-        },{
+        }, {
           path: 'menu',
           name: 'MenuList',
           component: MenuList
