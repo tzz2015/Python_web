@@ -6,6 +6,7 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import CommonUtils from './CommonUtils.js'
+import ConstMange from './ConstMange.js'
 import RequestUtils from './RequestUtils'
 import store from './store'
 import vueCookie from 'vue-cookie'
@@ -16,6 +17,8 @@ Vue.use(vueCookie)
 Vue.prototype.$comUtils = CommonUtils
 Vue.prototype.$vHOST = '/api/'
 Vue.prototype.$requestUtils = RequestUtils
+Vue.prototype.$constMange = ConstMange
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

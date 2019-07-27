@@ -1,7 +1,7 @@
 <template>
   <div class="page-login">
     <el-card class="login-container">
-        <h3 class="title">管理系统用户登录</h3>
+      <h3 class="title">管理系统用户登录</h3>
       <el-form ref="login" :model="form" label-width="70px" :rules="rules" style="margin-top: 10px">
         <el-form-item label="用户名:" prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
@@ -10,7 +10,7 @@
           <el-input v-model="form.password" placeholder="密码" type="password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button class="yellow" type="warning"  @click="submitForm('login')">登录</el-button>
+          <el-button class="yellow" type="warning" @click="submitForm('login')">登录</el-button>
           <el-button @click="resetForm('login')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -22,7 +22,7 @@ export default {
   data () {
     return {
       form: {
-        username: 'lyf',
+        username: '刘宇飞',
         password: 'lyf'
       },
       rules: {
@@ -49,7 +49,7 @@ export default {
               if (res) {
                 console.log(res)
                 this.$store.commit('updateUserInfo', res.data)
-                this.$router.go(-1)
+                this.$router.push('/admin')
               }
             })
         } else {
@@ -66,15 +66,16 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .page-login{
-    background-size:cover;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+  .page-login {
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: url(../assets/image/bg-login.jpg) no-repeat center;
   }
+
   .el-dialog {
     padding-left: 3%;
     padding-right: 3%;

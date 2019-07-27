@@ -6,7 +6,7 @@
         <a href="/admin"><img src="../../assets/logo.png" style="padding-left:8px;"></a>
       </div>
       <div class="topbar-title">
-        <span style="font-size: 18px;color: #fff;">未知后台管理系统</span>
+        <span style="font-size: 18px;color: #fff;">超级无敌后台管理系统</span>
       </div>
 
       <div class="topbar-account topbar-btn">
