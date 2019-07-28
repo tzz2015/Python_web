@@ -76,10 +76,18 @@
         <el-table-column
           width="125"
           label="菜单权限">
+          <template slot-scope="scope">
+            <a v-if="scope.row.user_type===0">我是老大，拥有全部权限</a>
+            <a v-else>空空如也~~</a>
+          </template>
         </el-table-column>
         <el-table-column
           width="125"
           label="操作权限">
+          <template slot-scope="scope">
+            <a v-if="scope.row.user_type===0">我是老大，拥有全部权限</a>
+            <a v-else>空空如也~~</a>
+          </template>
         </el-table-column>
         <el-table-column
           width="150"
