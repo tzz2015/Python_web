@@ -6,6 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    id: 0,
     username: '',
     email: '',
     last_login: '',
@@ -15,6 +16,7 @@ export default new Vuex.Store({
   },
   mutations: {
     updateUserInfo (state, newVal) {
+      state.id = newVal.id
       state.username = newVal.username
       state.email = newVal.email
       state.last_login = newVal.last_login

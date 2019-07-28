@@ -2,15 +2,18 @@ export default {
   user_type_list: [
     {
       label: '超级管理员',
-      value: 0
+      value: 0,
+      disabled: false
     },
     {
       label: '管理员',
-      value: 1
+      value: 1,
+      disabled: false
     },
     {
       label: '普通用户',
-      value: 2
+      value: 2,
+      disabled: false
     }
   ],
   active_list: [

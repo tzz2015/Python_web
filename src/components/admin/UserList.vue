@@ -25,6 +25,10 @@
         <el-form-item label="启用状态">
           <el-select v-model="search_form.is_active" placeholder="请选择" size="small" clearable>
             <el-option
+              label="全部"
+              value="">
+            </el-option>
+            <el-option
               v-for="item in active_list"
               :key="item.value"
               :label="item.label"
@@ -40,10 +44,12 @@
       <div slot="header">
         <span>用户列表</span>
         <span style="float: left">
-           <el-button type="danger" size="small" icon="el-icon-delete" round @click="delete_all">删除全部</el-button>
+           <el-button type="danger" :disabled="isDisabledEdit()" size="small" icon="el-icon-delete" round
+                      @click="delete_all">删除全部</el-button>
       </span>
         <span style="float: right">
-           <el-button type="success" size="small" round @click="show_add_user">添加成员</el-button>
+           <el-button type="success" :disabled="isDisabledEdit()" size="small" round
+                      @click="show_add_user">添加成员</el-button>
       </span>
       </div>
       <el-table
@@ -85,7 +91,8 @@
           label="启用状态">
           <template slot-scope="scope">
             <el-switch
-              @change="edit_user_status(scope.row.id)"
+              :disabled="isDisabledEdit(scope.row)"
+              @change="edit_user_status(scope.row)"
               v-model="scope.row.is_active"
               active-color="#13ce66"
               inactive-color="#ff4949">
@@ -98,13 +105,15 @@
           label="操作">
           <template slot-scope="scope">
             <el-button
+              :disabled="isDisabledEdit(scope.row)"
               @click="show_edit_user(scope.row)"
               type="text"
               size="small">
               编辑
             </el-button>
             <el-button
-              @click="delete_user (scope.row.id)"
+              :disabled="isDisabledEdit(scope.row)"
+              @click="delete_user(scope.row)"
               type="text"
               size="small">
               删除
@@ -133,7 +142,8 @@
         <el-form-item label="用户角色" prop="user_type" size="small">
           <el-select v-model="userInfo.user_type" placeholder="请选择" size="small" style="width: 100%">
             <el-option
-              v-for="item in user_type_list"
+              v-for="item in can_type_list()"
+              :disabled="item.disabled"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -253,12 +263,28 @@ export default {
         })
     },
     // 编辑用户
-    delete_user (id) {
-      console.log(`删除用户id: ${id}`)
+    delete_user (row) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$requestUtils.post(this, '/delete_user', row)
+          .then(res => {
+            this.dialogVisible = false
+            this.get_user_list(this.curr_page)
+            this.$comUtils.showSuccessMessage(this, res.data)
+          })
+      })
     },
     // 编辑用户状态
-    edit_user_status (id) {
-      console.log(`编辑用户状态id: ${id}`)
+    edit_user_status (row) {
+      this.$requestUtils.post(this, '/active', row)
+        .then(res => {
+          this.dialogVisible = false
+          this.get_user_list(this.curr_page)
+          this.$comUtils.showSuccessMessage(this, res.data)
+        })
     },
     // 用户查询
     doSearch () {
@@ -315,6 +341,31 @@ export default {
             })
         }
       })
+    },
+    // 判断用户是否有编辑权限
+    isDisabledEdit (row) {
+      if (row) {
+        if (row.id === this.$store.state.id) {
+          return true
+        }
+        if (this.$store.state.user_type === 1 && row.user_type === 2) {
+          return false
+        }
+      } else {
+        if (this.$store.state.user_type === 1) {
+          return false
+        }
+      }
+      return this.$store.state.user_type !== 0
+    },
+    // 获取可操作的用户角色列表
+    can_type_list () {
+      var userType = this.$constMange.user_type_list
+      userType[0].disabled = true
+      if (this.$store.state.user_type === 1) {
+        userType[1].disabled = true
+      }
+      return userType
     }
   }
 }
