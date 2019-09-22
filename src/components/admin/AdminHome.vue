@@ -30,10 +30,10 @@
         <el-menu @select="handleSelect" :default-active="$route.path"
                  background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
           <template v-for="item in menuList">
-            <el-submenu :index="item.name" :key="item.id">
-              <template slot="title">{{item.name}}</template>
-              <el-menu-item v-for="childMenu in item.childMenuList" :index="childMenu.path" :key="childMenu.id">
-                {{childMenu.name}}
+            <el-submenu :index="item.id" :key="item.id">
+              <template slot="title">{{item.type_name}}</template>
+              <el-menu-item v-for="childMenu in item.child_List" :index="childMenu.menu_path" :key="childMenu.id">
+                {{childMenu.menu_name}}
               </el-menu-item>
             </el-submenu>
           </template>
@@ -43,7 +43,7 @@
       <!--右侧内容区-->
       <section class="content-container">
         <div>
-            <router-view></router-view>
+          <router-view></router-view>
         </div>
       </section>
 
@@ -103,19 +103,19 @@ export default {
       menuList: [
         {
           id: 1,
-          name: '用户管理',
-          childMenuList: [{
-            name: '系统用户',
-            path: 'UserList'
+          type_name: '用户管理',
+          child_List: [{
+            menu_name: '系统用户',
+            menu_path: 'UserList'
           }
           ]
         },
         {
           id: 2,
-          name: '菜单管理',
-          childMenuList: [{
-            name: '菜单列表',
-            path: 'MenuList'
+          type_name: '菜单管理',
+          child_List: [{
+            menu_name: '菜单列表',
+            menu_path: 'MenuList'
           }
           ]
         }
@@ -132,12 +132,23 @@ export default {
     }
   },
   created () {
+    this.getMenuList()
     this.getUserInfo()
   },
   methods: {
     handleSelect (index) {
       this.$router.replace({name: index})
     },
+    // 获取权限菜单列表
+    getMenuList () {
+      this.$requestUtils.get(this, '/permission_menu_list')
+        .then(res => {
+          if (res) {
+            this.menuList = res.data
+          }
+        })
+    },
+    // 获取用户信息
     getUserInfo () {
       this.$requestUtils.post(this, '/user_info')
         .then(res => {
@@ -146,6 +157,7 @@ export default {
           }
         })
     },
+    /// 登出
     logout () {
       this.$requestUtils.post(this, '/logout')
         .then(res => {
@@ -157,6 +169,7 @@ export default {
     changePass () {
       this.visible = !this.visible
     },
+    // 修改密码
     change_password () {
       if (!this.formPassword.oldPassword) {
         this.$comUtils.showErrorMessage(this, '请输入旧密码')
