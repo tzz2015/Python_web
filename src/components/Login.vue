@@ -23,7 +23,7 @@ export default {
     return {
       form: {
         username: '刘宇飞',
-        password: 'lyf'
+        password: '111'
       },
       rules: {
         username: [

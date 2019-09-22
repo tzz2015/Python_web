@@ -5,10 +5,12 @@
 export default {
   name: 'NotFound',
   created () {
+    console.log(window.history)
     setTimeout(_ => {
-      this.$router.go(-1)
+      this.$router.back()
     }, 5000)
   }
+
 }
 </script>
 <style>
