@@ -88,116 +88,116 @@
 </template>
 
 <script>
-  export default {
-    name: 'AdminHome',
-    data () {
-      return {
-        defaultActiveIndex: '1',
-        collapsed: true,
-        show_change_pw: false,
-        formPassword: {
-          oldPassword: '',
-          newPassword: ''
-        },
-        visible: false,
-        // 菜单列表
-        menuList: [
-          {
-            id: 1,
-            type_name: '用户管理',
-            child_List: [{
-              menu_name: '系统用户',
-              menu_path: 'UserList'
-            }
-            ]
-          },
-          {
-            id: 2,
-            type_name: '菜单管理',
-            child_List: [{
-              menu_name: '菜单列表',
-              menu_path: 'MenuList'
-            }
-            ]
+export default {
+  name: 'AdminHome',
+  data () {
+    return {
+      defaultActiveIndex: '1',
+      collapsed: true,
+      show_change_pw: false,
+      formPassword: {
+        oldPassword: '',
+        newPassword: ''
+      },
+      visible: false,
+      // 菜单列表
+      menuList: [
+        {
+          id: 1,
+          type_name: '用户管理',
+          child_List: [{
+            menu_name: '系统用户',
+            menu_path: 'UserList'
           }
-        ]
-      }
-    },
-    computed: {
-      userName () {
-        if (this.$store.state.username) {
-          return this.$store.state.username
-        } else {
-          return ''
+          ]
+        },
+        {
+          id: 2,
+          type_name: '菜单管理',
+          child_List: [{
+            menu_name: '菜单列表',
+            menu_path: 'MenuList'
+          }
+          ]
         }
-      }
-    },
-    created () {
-      this.getMenuList()
-      this.getUserInfo()
-    },
-    methods: {
-      handleSelect (index) {
-        this.$router.replace({name: index})
-      },
-      // 获取权限菜单列表
-      getMenuList () {
-        this.$requestUtils.get(this, '/permission_menu_list')
-          .then(res => {
-            if (res) {
-              this.menuList = res.data
-            }
-          })
-      },
-      // 获取用户信息
-      getUserInfo () {
-        this.$requestUtils.post(this, '/user_info')
-          .then(res => {
-            if (res) {
-              this.$store.commit('updateUserInfo', res.data)
-            }
-          })
-      },
-      /// 登出
-      logout () {
-        this.$requestUtils.post(this, '/logout')
-          .then(res => {
-            if (res) {
-              this.handleSelect('Login')
-            }
-          })
-      },
-      changePass () {
-        this.visible = !this.visible
-      },
-      // 修改密码
-      change_password () {
-        if (!this.formPassword.oldPassword) {
-          this.$comUtils.showErrorMessage(this, '请输入旧密码')
-          return
-        }
-        if (!this.formPassword.newPassword) {
-          this.$comUtils.showErrorMessage(this, '请输入新密码')
-          return
-        }
-        if (this.formPassword.newPassword === this.formPassword.oldPassword) {
-          this.$comUtils.showErrorMessage(this, '新密码和旧密码一致')
-          return
-        }
-        this.$requestUtils.post(this, 'change_password', this.formPassword)
-          .then(resp => {
-            this.$comUtils.showSuccessMessage(this, '修改成功')
-            this.show_change_pw = false
-            this.formPassword.newPassword = ''
-            this.formPassword.oldPassword = ''
-            this.handleSelect('Login')
-          })
-          .catch(e => {
-            console.log(e)
-          })
+      ]
+    }
+  },
+  computed: {
+    userName () {
+      if (this.$store.state.username) {
+        return this.$store.state.username
+      } else {
+        return ''
       }
     }
+  },
+  created () {
+    this.getMenuList()
+    this.getUserInfo()
+  },
+  methods: {
+    handleSelect (index) {
+      this.$router.replace({name: index})
+    },
+    // 获取权限菜单列表
+    getMenuList () {
+      this.$requestUtils.get(this, '/permission_menu_list')
+        .then(res => {
+          if (res) {
+            this.menuList = res.data
+          }
+        })
+    },
+    // 获取用户信息
+    getUserInfo () {
+      this.$requestUtils.post(this, '/user_info')
+        .then(res => {
+          if (res) {
+            this.$store.commit('updateUserInfo', res.data)
+          }
+        })
+    },
+    /// 登出
+    logout () {
+      this.$requestUtils.post(this, '/logout')
+        .then(res => {
+          if (res) {
+            this.handleSelect('Login')
+          }
+        })
+    },
+    changePass () {
+      this.visible = !this.visible
+    },
+    // 修改密码
+    change_password () {
+      if (!this.formPassword.oldPassword) {
+        this.$comUtils.showErrorMessage(this, '请输入旧密码')
+        return
+      }
+      if (!this.formPassword.newPassword) {
+        this.$comUtils.showErrorMessage(this, '请输入新密码')
+        return
+      }
+      if (this.formPassword.newPassword === this.formPassword.oldPassword) {
+        this.$comUtils.showErrorMessage(this, '新密码和旧密码一致')
+        return
+      }
+      this.$requestUtils.post(this, 'change_password', this.formPassword)
+        .then(resp => {
+          this.$comUtils.showSuccessMessage(this, '修改成功')
+          this.show_change_pw = false
+          this.formPassword.newPassword = ''
+          this.formPassword.oldPassword = ''
+          this.handleSelect('Login')
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    }
   }
+}
 </script>
 
 <style scoped lang="scss">

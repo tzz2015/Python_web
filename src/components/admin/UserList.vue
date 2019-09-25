@@ -141,6 +141,7 @@
     </el-card>
     <el-dialog
       width="35%"
+      center
       :title='dialogTitle'
       :visible.sync="dialogVisible">
       <el-form :model="userInfo" :rules="rules" ref="userInfo" label-width="80px" style="margin-right: 50px">
