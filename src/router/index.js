@@ -9,6 +9,8 @@ import AdminHome from '@/components/admin/AdminHome'
 import HomeInfo from '@/components/admin/HomeInfo'
 import UserList from '@/components/admin/UserList'
 import MenuList from '@/components/admin/MenuList'
+import TopMenuList from '@/components/admin/TopMenuList'
+
 
 Vue.use(Router)
 
@@ -36,6 +38,10 @@ export default new Router({
           path: 'menu',
           name: 'MenuList',
           component: MenuList
+        }, {
+          path: 'topMenu',
+          name: 'TopMenuList',
+          component: TopMenuList
         }
       ]
     },

@@ -2,34 +2,23 @@
   <div>
     <el-card>
       <div slot="header">
-        <span>菜单列表</span>
+        <span>一级菜单列表</span>
         <span style="float: right">
-           <el-button type="success" size="small" round @click="showEditMenu({})">新增菜单</el-button>
+           <el-button type="success" size="small" round @click="showEditMenu({})">新增一级菜单</el-button>
       </span>
       </div>
       <div>
         <el-table
-          border
-          :data="menuList"
-          style="width: 100%"
-          :row-class-name="tableRowClassName">
+          stripe
+          :data="menuTypeList"
+          style="width: 100%">
           <el-table-column
             type="index"
             width="50">
           </el-table-column>
           <el-table-column
-            prop="menu_name"
+            prop="type_name"
             label="菜单名称">
-          </el-table-column>
-          <el-table-column
-            prop="menu_path"
-            label="菜单路径">
-          </el-table-column>
-          <el-table-column
-            label="一级菜单">
-            <template slot-scope="scope">
-              <a>{{scope.row.menu_type.type_name}}</a>
-            </template>
           </el-table-column>
           <el-table-column
             prop="remark"
@@ -62,25 +51,12 @@
       center
       :title='dialogTitle'
       :visible.sync="dialogVisible">
-      <el-form :model="menuInfo" :rules="rules" ref="menuInfo" label-width="80px" style="margin-right: 50px">
+      <el-form :model="menuTypeInfo" :rules="rules" ref="menuTypeInfo" label-width="80px" style="margin-right: 50px">
         <el-form-item label="菜单名称" prop="menu_name" size="small">
-          <el-input v-model="menuInfo.menu_name" size="small" placeholder="请输入菜单名称"></el-input>
-        </el-form-item>
-        <el-form-item label="菜单路径" prop="menu_path" size="small">
-          <el-input v-model="menuInfo.menu_path" size="small" placeholder="请输入菜单路径"></el-input>
-        </el-form-item>
-        <el-form-item label="一级菜单" prop="menu_type_id" multiple size="small">
-          <el-select v-model="menuInfo.menu_type_id" placeholder="请选择" size="small" style="width: 100%">
-            <el-option
-              v-for="item in menuTypeList"
-              :key="item.id"
-              :label="item.type_name"
-              :value="item.id">
-            </el-option>
-          </el-select>
+          <el-input v-model="menuTypeInfo.type_name" size="small" placeholder="请输入菜单名称"></el-input>
         </el-form-item>
         <el-form-item label="备注" size="small">
-          <el-input v-model="menuInfo.remark" size="small" placeholder="请输入备注"></el-input>
+          <el-input v-model="menuTypeInfo.remark" size="small" placeholder="请输入备注"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -96,47 +72,22 @@ export default {
   name: 'MenuList',
   data () {
     return {
-      menuList: [],
       menuTypeList: [],
       dialogVisible: false,
       dialogTitle: '编辑菜单',
-      menuInfo: {},
+      menuTypeInfo: {},
       rules: {
-        menu_name: [
+        type_name: [
           {required: true, message: '请输入菜单名称', trigger: 'blur'}
-        ],
-        menu_path: [
-          {required: true, message: '请输入菜单路径', trigger: 'blur'}
-        ],
-        menu_type_id: [
-          {required: true, message: '请选择菜单类型', trigger: 'change'}
         ]
       }
 
     }
   },
   created () {
-    this.getMenuList()
     this.getMenuTypeList()
   },
   methods: {
-    // 获取所有的菜单列表
-    getMenuList () {
-      this.$requestUtils.get(this, '/menu_list')
-        .then(res => {
-          if (res) {
-            this.menuList = res.data
-          }
-        })
-    },
-    // 表格样式
-    tableRowClassName ({row, rowIndex}) {
-      if (rowIndex % 2 === 1) {
-        return 'warning-row'
-      } else {
-        return 'success-row'
-      }
-    },
     // 获取菜单类型
     getMenuTypeList () {
       this.$requestUtils.get(this, '/menu_type_list')
@@ -148,31 +99,31 @@ export default {
     },
     // 删除菜单
     showDeleteDialog (row) {
-      this.$confirm('你确定删除该菜单, 是否继续?', '提示', {
+      this.$confirm('删除一级菜单，所关联的二级菜单也会删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$requestUtils.post(this, '/delete_menu', row)
+        this.$requestUtils.post(this, '/delete_menu_type', row)
           .then(res => {
-            // this.getMenuList()
+            // this.getMenuTypeList()
             this.$comUtils.showSuccessMessage(this, '删除成功')
             location.reload()
           })
       })
     },
     showEditMenu (row) {
-      this.menuInfo = row
+      this.menuTypeInfo = row
       this.dialogVisible = true
     },
     // 提交编辑菜单
     postEditMenu () {
-      this.$refs.menuInfo.validate((valid) => {
+      this.$refs.menuTypeInfo.validate((valid) => {
         if (valid) {
           this.dialogVisible = false
-          this.$requestUtils.post(this, '/add_or_edit_menu', this.menuInfo)
+          this.$requestUtils.post(this, '/create_menu_type', this.menuTypeInfo)
             .then(res => {
-              // this.getMenuList()
+              // this.getMenuTypeList()
               this.$comUtils.showSuccessMessage(this, '编辑成功')
               location.reload()
             })
@@ -185,11 +136,4 @@ export default {
 </script>
 
 <style>
-  .el-table .warning-row {
-    background: oldlace;
-  }
-
-  .el-table .success-row {
-    background: #f0f9eb;
-  }
 </style>
