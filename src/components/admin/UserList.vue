@@ -78,7 +78,7 @@
           label="菜单权限">
           <template slot-scope="scope">
             <a v-if="scope.row.user_type===0">我是老大，拥有全部权限</a>
-            <a v-else>空空如也~~</a>
+            <a v-else>{{scope.row.menuNames.join(',')}}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -160,13 +160,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="菜单权限" multiple size="small">
-          <el-select v-model="userInfo.menu" placeholder="请选择" size="small" style="width: 100%">
-            <el-option
-              v-for="item in menu_list"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+          <el-select v-model="userInfo.menuIds" multiple placeholder="请选择" size="small" style="width: 100%">
+            <el-option-group
+              v-for="group in menu_list"
+              :key="group.type_name"
+              :label="group.type_name">
+              <el-option
+                v-for="item in group.menu_list"
+                :key="item.menu_name"
+                :label="item.menu_name"
+                :value="item.id">
+              </el-option>
+            </el-option-group>
           </el-select>
         </el-form-item>
         <el-form-item label="操作权限" multiple prop="isCraftsman" size="small">
@@ -195,7 +200,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'UserList',
   data () {
@@ -237,6 +241,7 @@ export default {
   },
   created () {
     this.get_user_list(1)
+    this.getAllMenuList()
   },
   methods: {
     getStateName (state, arr) {
@@ -265,6 +270,9 @@ export default {
           if (res) {
             if (res.data !== null || res.data !== undefined) {
               this.total = res.data.total
+              res.data.list.forEach(user => {
+                this.forMenuName(user)
+              })
               this.user_list = res.data.list
               this.curr_page = page
             }
@@ -314,7 +322,7 @@ export default {
         id: 0,
         username: '',
         user_type: 2,
-        menu: [],
+        menuIds: [],
         option: [],
         password: '',
         confirm_password: ''
@@ -323,12 +331,15 @@ export default {
     // 编辑成员
     show_edit_user (row) {
       this.dialogVisible = true
-      this.isEdit = true
-      this.dialogTitle = '编辑用户'
-      this.userInfo = Object.assign({}, row)
-      this.userInfo.password = '**dfd**87kjdk**dsdhjh388'
-      this.userInfo.confirm_password = '**dfd**87kjdk**dsdhjh388'
-      this.$refs.userInfo.resetFields()
+      this.$nextTick(() => {
+        this.$refs.userInfo.resetFields()
+        this.isEdit = true
+        this.dialogTitle = '编辑用户'
+        this.userInfo = {}
+        this.userInfo = Object.assign({}, row)
+        this.userInfo.password = '**dfd**87kjdk**dsdhjh388'
+        this.userInfo.confirm_password = '**dfd**87kjdk**dsdhjh388'
+      })
     },
     // 新增或者编辑用户
     confirm_user () {
@@ -375,6 +386,28 @@ export default {
         userType[1].disabled = true
       }
       return userType
+    },
+    // 获取菜单组合
+    forMenuName (user) {
+      this.$set(user, 'menuIds', [])
+      this.$set(user, 'menuNames', [])
+      user.menu_list.forEach(item => {
+        item.child_List.forEach(item2 => {
+          user.menuIds.push(item2.id)
+          user.menuNames.push(item2.menu_name)
+        })
+      })
+    },
+    // 获取所有菜单列表
+    getAllMenuList () {
+      this.$requestUtils.get(this, '/menu_list_by_type')
+        .then(res => {
+          if (res) {
+            if (res.data !== null || res.data !== undefined) {
+              this.menu_list = res.data
+            }
+          }
+        })
     }
   }
 }

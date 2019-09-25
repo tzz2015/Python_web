@@ -32,7 +32,7 @@
           <template v-for="item in menuList">
             <el-submenu :index="item.type_name" :key="item.id">
               <template slot="title">{{item.type_name}}</template>
-              <el-menu-item v-for="childMenu in item.child_List" :index="childMenu.menu_path"
+              <el-menu-item v-for="childMenu in item.menu_list" :index="childMenu.menu_path"
                              :key="childMenu.id">
                 {{childMenu.menu_name}}
               </el-menu-item>
