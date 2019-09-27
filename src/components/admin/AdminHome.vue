@@ -33,7 +33,7 @@
             <el-submenu :index="item.type_name" :key="item.id">
               <template slot="title">{{item.type_name}}</template>
               <el-menu-item v-for="childMenu in item.menu_list" :index="childMenu.menu_path"
-                             :key="childMenu.id">
+                            :key="childMenu.id">
                 {{childMenu.menu_name}}
               </el-menu-item>
             </el-submenu>
@@ -101,26 +101,7 @@ export default {
       },
       visible: false,
       // 菜单列表
-      menuList: [
-        {
-          id: 1,
-          type_name: '用户管理',
-          child_List: [{
-            menu_name: '系统用户',
-            menu_path: 'UserList'
-          }
-          ]
-        },
-        {
-          id: 2,
-          type_name: '菜单管理',
-          child_List: [{
-            menu_name: '菜单列表',
-            menu_path: 'MenuList'
-          }
-          ]
-        }
-      ]
+      menuList: []
     }
   },
   computed: {

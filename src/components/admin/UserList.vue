@@ -354,7 +354,10 @@ export default {
           if (password === '**dfd**87kjdk**dsdhjh388') {
             this.userInfo.password = ''
           }
-          this.$requestUtils.post(this, '/create_update_user', this.userInfo)
+          let params = Object.assign({}, this.userInfo)
+          params.menuIds = this.userInfo.menuIds.toString()
+          console.log(params)
+          this.$requestUtils.post(this, '/create_update_user', params)
             .then(res => {
               this.dialogVisible = false
               this.get_user_list(this.curr_page)
@@ -392,7 +395,7 @@ export default {
       this.$set(user, 'menuIds', [])
       this.$set(user, 'menuNames', [])
       user.menu_list.forEach(item => {
-        item.child_List.forEach(item2 => {
+        item.menu_list.forEach(item2 => {
           user.menuIds.push(item2.id)
           user.menuNames.push(item2.menu_name)
         })
