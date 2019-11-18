@@ -17,6 +17,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.9",
+    "lib-flexible": "^0.3.2",
+    "px2rem-loader": "^0.1.9",
     "qs": "^6.7.0",
     "vue": "^2.5.17",
     "vue-cookie": "^1.1.4",
