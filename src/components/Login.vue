@@ -11,6 +11,7 @@
         </el-form-item>
         <el-form-item>
           <el-button class="yellow" type="warning" @click="submitForm('login')">登录</el-button>
+          <el-button type="primary" @click="submitRegistForm('login')">注册</el-button>
           <el-button @click="resetForm('login')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -36,6 +37,7 @@ export default {
     }
   },
   methods: {
+    // 登录
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -57,6 +59,29 @@ export default {
         }
       })
     },
+    // 注册
+    submitRegistForm (formName) {
+      const that = this
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let parm = {
+            username: this.form.username,
+            password: this.form.password
+          }
+
+          this.$requestUtils.post(this, '/create_update_user', parm)
+            .then(res => {
+              if (res) {
+                console.log(res)
+                that.submitForm('login')
+              }
+            })
+        } else {
+          return false
+        }
+      })
+    },
+    // 重置
     resetForm (formName) {
       this.$refs[formName].resetFields()
       this.form.password = ''
