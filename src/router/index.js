@@ -10,8 +10,7 @@ import HomeInfo from '@/components/admin/HomeInfo'
 import UserList from '@/components/admin/UserList'
 import MenuList from '@/components/admin/MenuList'
 import TopMenuList from '@/components/admin/TopMenuList'
-import Alum3D from '@/components/phone/Alum3D'
-
+import AlumOrder from '@/components/admin/phone/AlumOrder'
 Vue.use(Router)
 
 export default new Router({
@@ -42,6 +41,10 @@ export default new Router({
           path: 'topMenu',
           name: 'TopMenuList',
           component: TopMenuList
+        }, {
+          path: 'AlumOrder',
+          name: 'AlumOrder',
+          component: AlumOrder
         }
       ]
     },
@@ -49,11 +52,6 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
-    },
-    {
-      path: '/Alum3D',
-      name: 'Alum3D',
-      component: Alum3D
     },
     {
       path: '/404',
