@@ -12,6 +12,7 @@ import MenuList from '@/components/admin/MenuList'
 import TopMenuList from '@/components/admin/TopMenuList'
 import AlumOrder from '@/components/admin/phone/AlumOrder'
 import AlumList from '@/components/admin/phone/AlumList'
+import EditAlum from '@/components/admin/phone/EditAlum'
 
 Vue.use(Router)
 
@@ -51,6 +52,10 @@ export default new Router({
           path: 'AlumList',
           name: 'AlumList',
           component: AlumList
+        }, {
+          path: 'EditAlum',
+          name: 'EditAlum',
+          component: EditAlum
         }
       ]
     },

@@ -14,7 +14,7 @@
         <span>相册列表</span>
         <span style="float: right">
            <el-button type="success" size="small" round
-                      @click="addAlum">新增相册</el-button>
+                      @click="addOrEditAlum('')">新增相册</el-button>
       </span>
       </div>
       <div>
@@ -78,7 +78,7 @@
             width="160"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" small v-if="isShowEdit(scope.row)">编辑</el-button>
+              <el-button type="text" small v-if="isShowEdit(scope.row)" @click="addOrEditAlum(scope.row)">编辑</el-button>
               <el-button type="text" small>复制链接</el-button>
               <el-button type="text" small v-if="isShowPayButton(scope.row)" @click="showPayDialog(scope.row)">打赏
               </el-button>
@@ -204,9 +204,14 @@ export default {
     isShowEdit (row) {
       return this.$store.state.id === row.user.id
     },
-    // 新增相册
-    addAlum () {
-      this.$comUtils.showSuccessMessage(this, '新增')
+    // 新增或者编辑相册
+    addOrEditAlum (data) {
+      this.$router.push({
+        path: '/admin/EditAlum',
+        query: {
+          alumInfo: data
+        }
+      })
     },
     // 关闭相册展示dialog
     handleClose (done) {
