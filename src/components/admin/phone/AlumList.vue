@@ -5,7 +5,7 @@
         <span>筛选查询</span>
       </div>
       请输入：
-      <el-input v-model="search_pram.username" placeholder="用户名|微信名|相册key" size="small" clearable
+      <el-input v-model="search_pram.username" placeholder="用户名" size="small" clearable
                 class="search_input"></el-input>
       <el-button type="primary" size="small" style="margin-top: 4px" round @click="doSearch">查询</el-button>
     </el-card>
@@ -38,6 +38,8 @@
             width="150">
           </el-table-column>
           <el-table-column
+            :filters="[{text: '已打赏', value: 0}, {text: '待审核', value: 2}, {text: '未打赏', value: 1}]"
+            :filter-method="filterHandler"
             v-if="isShowSearchBar()"
             label="打赏状态"
             width="120">
@@ -73,8 +75,13 @@
           <el-table-column
             align="center"
             fixed="right"
+            width="160"
             label="操作">
             <template slot-scope="scope">
+              <el-button type="text" small v-if="isShowEdit(scope.row)">编辑</el-button>
+              <el-button type="text" small>复制链接</el-button>
+              <el-button type="text" small v-if="isShowPayButton(scope.row)" @click="showPayDialog(scope.row)">打赏
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -90,21 +97,33 @@
       </div>
     </el-card>
     <el-dialog
-      title="列表展示"
-      :visible.sync="photosDialogVisible"
+      title="自愿打赏"
+      :visible.sync="payDialogVisible"
       width="30%"
       :before-close="handleClose">
-      <div class="demo-image__lazy">
-        <el-image v-for="url in curr_image_urls" :key="url" :src="url" lazy></el-image>
+      <div>
+        熬了不少夜晚写的，不容易的，相互支持一下吧！
+        <img src="../../../assets/image/WechatIMG25.png" style="width:200px;height:300px;margin-top: 20px"/>
+        <el-input v-model="pay_pram.wachat_name" placeholder="请输入微信名,方便核对" size="small" clearable
+                  class="search_input"></el-input>
+        <el-button type="primary" size="small" style="margin-top: 4px" round @click="payMoreMoney">打赏</el-button>
       </div>
     </el-dialog>
+    <div>
+      <el-image-viewer
+        v-if="photosDialogVisible"
+        :on-close="handleClose"
+        :url-list="curr_image_urls"></el-image-viewer>
+    </div>
   </div>
 </template>
 
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+
 export default {
   name: 'AlumOrder',
+  components: {ElImageViewer},
   data () {
     return {
       // 搜索条件
@@ -113,6 +132,12 @@ export default {
         page: 1,
         page_size: 5
       },
+      // 打赏参数
+      pay_pram: {
+        key: '',
+        pay_status: 2,
+        wachat_name: ''
+      },
       // 相册订单
       alum_list: [],
       // 数据总数
@@ -120,7 +145,9 @@ export default {
       // 相片集合弹窗
       photosDialogVisible: false,
       // 当前图片集合
-      curr_image_urls: []
+      curr_image_urls: [],
+      // 打赏弹窗
+      payDialogVisible: false
     }
   },
   created () {
@@ -138,24 +165,22 @@ export default {
               this.alum_list.forEach(item => {
                 if (item.image_urls !== null) {
                   item.image_urls = item.image_urls.split(',')
+                  console.log(item.image_urls)
                 }
               })
             }
           }
         })
     },
-    // 通过审核
-    pass (row) {
-      const params = {
-        key: row.alum.key,
-        pay_status: 2
-      }
+    // 提交打赏
+    payMoreMoney (row) {
       const that = this
-      this.$requestUtils.post(this, '/update_alum_order', params)
+      this.$requestUtils.post(this, '/update_alum_order', this.pay_pram)
         .then(res => {
           if (res) {
             if (res.data !== null || res.data !== undefined) {
               that.doSearch()
+              that.payDialogVisible = false
             }
           }
         })
@@ -168,7 +193,16 @@ export default {
     },
     // 是否显示搜索
     isShowSearchBar () {
-      return this.$store.state.user_type !== 2
+      return true
+      // return this.$store.state.user_type !== 2
+    },
+    // 是否显示打赏
+    isShowPayButton (row) {
+      return this.$store.state.id === row.user.id && row.payInfo.pay_status !== 0
+    },
+    // 是否显示编辑
+    isShowEdit (row) {
+      return this.$store.state.id === row.user.id
     },
     // 新增相册
     addAlum () {
@@ -177,11 +211,21 @@ export default {
     // 关闭相册展示dialog
     handleClose (done) {
       this.photosDialogVisible = false
+      this.payDialogVisible = false
     },
     // 展示全部
     showAllPhoto (urls) {
       this.curr_image_urls = urls
       this.photosDialogVisible = true
+    },
+    // 打赏判断
+    filterHandler (value, row, column) {
+      return row.payInfo.pay_status === value
+    },
+    // 显示打赏弹窗
+    showPayDialog (row) {
+      this.pay_pram.key = row.key
+      this.payDialogVisible = true
     }
   }
 }
