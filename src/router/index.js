@@ -11,6 +11,8 @@ import UserList from '@/components/admin/UserList'
 import MenuList from '@/components/admin/MenuList'
 import TopMenuList from '@/components/admin/TopMenuList'
 import AlumOrder from '@/components/admin/phone/AlumOrder'
+import AlumList from '@/components/admin/phone/AlumList'
+
 Vue.use(Router)
 
 export default new Router({
@@ -45,6 +47,10 @@ export default new Router({
           path: 'AlumOrder',
           name: 'AlumOrder',
           component: AlumOrder
+        }, {
+          path: 'AlumList',
+          name: 'AlumList',
+          component: AlumList
         }
       ]
     },

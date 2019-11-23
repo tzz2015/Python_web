@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import ElementUI from 'element-ui'
+import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 import CommonUtils from './util/CommonUtils.js'
 import ConstMange from './ConstMange.js'
@@ -12,7 +12,7 @@ import store from './store'
 import vueCookie from 'vue-cookie'
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+Vue.use(Element, { size: 'small', zIndex: 3000 });
 Vue.use(vueCookie)
 Vue.prototype.$comUtils = CommonUtils
 Vue.prototype.$vHOST = '/api/'

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card>
+    <el-card v-show="isShowSearchBar()">
       <div slot="header">
         <span>筛选查询</span>
       </div>
@@ -11,13 +11,17 @@
     </el-card>
     <el-card style="margin-top: 20px">
       <div slot="header">
-        <span>相册订单列表</span>
+        <span>相册列表</span>
+        <span style="float: right">
+           <el-button type="success" size="small" round
+                      @click="addAlum">新增相册</el-button>
+      </span>
       </div>
       <div>
         <el-table
           ref="orderTable"
           border
-          :data="order_list"
+          :data="alum_list"
           style="width: 100%">
           <el-table-column
             type="index"
@@ -29,21 +33,41 @@
             width="120">
           </el-table-column>
           <el-table-column
-            prop="wachat_name"
-            label="微信名"
-            width="120">
+            prop="key"
+            label="相册key"
+            width="150">
           </el-table-column>
           <el-table-column
-            prop="alum.key"
-            label="相册key">
-          </el-table-column>
-          <el-table-column
-            label="支付状态"
+            v-if="isShowSearchBar()"
+            label="打赏状态"
             width="120">
             <template slot-scope="scope">
-              <a v-if="scope.row.pay_status===0">已打赏</a>
-              <a v-else-if="scope.row.pay_status===2">待审核</a>
+              <a v-if="scope.row.payInfo.pay_status===0">已打赏</a>
+              <a v-else-if="scope.row.payInfo.pay_status===2">待审核</a>
               <a v-else>未打赏</a>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="背景图片"
+            width="180">
+            <template slot-scope="scope">
+              <a :href="scope.row.bg_url" target="_blank"><img :src="scope.row.bg_url" class="bg_image"></a>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="背景音乐"
+            width="180">
+            <template slot-scope="scope">
+              <audio :src="scope.row.music_url" controls style="width:150px;"></audio>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="相片集合"
+            width="180">
+            <template slot-scope="scope">
+              <a :href="scope.row.image_urls[0]" target="_blank"><img :src="scope.row.image_urls[0]"
+                                                                      class="bg_image"></a>
+              <el-button type="text" small @click="showAllPhoto(scope.row.image_urls)">查看全部</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -51,13 +75,6 @@
             fixed="right"
             label="操作">
             <template slot-scope="scope">
-              <el-button
-                :disabled="scope.row.pay_status!==2"
-                @click="pass(scope.row)"
-                type="text"
-                size="small">
-                通过
-              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -72,10 +89,20 @@
         </div>
       </div>
     </el-card>
+    <el-dialog
+      title="列表展示"
+      :visible.sync="photosDialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <div class="demo-image__lazy">
+        <el-image v-for="url in curr_image_urls" :key="url" :src="url" lazy></el-image>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
   name: 'AlumOrder',
   data () {
@@ -87,9 +114,13 @@ export default {
         page_size: 5
       },
       // 相册订单
-      order_list: [],
+      alum_list: [],
       // 数据总数
-      total: 1
+      total: 1,
+      // 相片集合弹窗
+      photosDialogVisible: false,
+      // 当前图片集合
+      curr_image_urls: []
     }
   },
   created () {
@@ -98,12 +129,17 @@ export default {
   methods: {
     // 搜索列表
     doSearch () {
-      this.$requestUtils.post(this, '/alum_order_list', this.search_pram)
+      this.$requestUtils.post(this, '/alum_list', this.search_pram)
         .then(res => {
           if (res) {
             if (res.data !== null || res.data !== undefined) {
               this.total = res.data.total
-              this.order_list = res.data.list
+              this.alum_list = res.data.list
+              this.alum_list.forEach(item => {
+                if (item.image_urls !== null) {
+                  item.image_urls = item.image_urls.split(',')
+                }
+              })
             }
           }
         })
@@ -112,7 +148,7 @@ export default {
     pass (row) {
       const params = {
         key: row.alum.key,
-        pay_status: 0
+        pay_status: 2
       }
       const that = this
       this.$requestUtils.post(this, '/update_alum_order', params)
@@ -129,6 +165,23 @@ export default {
       this.search_pram.page = val
       console.log(`当前页: ${val}`)
       this.doSearch()
+    },
+    // 是否显示搜索
+    isShowSearchBar () {
+      return this.$store.state.user_type !== 2
+    },
+    // 新增相册
+    addAlum () {
+      this.$comUtils.showSuccessMessage(this, '新增')
+    },
+    // 关闭相册展示dialog
+    handleClose (done) {
+      this.photosDialogVisible = false
+    },
+    // 展示全部
+    showAllPhoto (urls) {
+      this.curr_image_urls = urls
+      this.photosDialogVisible = true
     }
   }
 }
@@ -144,6 +197,12 @@ export default {
     float: right;
     padding-top: 20px;
     padding-bottom: 20px;
+  }
+
+  .bg_image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
   }
 
 </style>
