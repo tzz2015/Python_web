@@ -38,7 +38,7 @@
             label="相册key">
           </el-table-column>
           <el-table-column
-            label="支付状态"
+            label="打赏状态"
             width="120">
             <template slot-scope="scope">
               <a v-if="scope.row.pay_status===0">已打赏</a>

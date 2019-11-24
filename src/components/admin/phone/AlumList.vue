@@ -102,7 +102,7 @@
       width="30%"
       :before-close="handleClose">
       <div>
-        熬了不少夜晚写的，不容易的，相互支持一下吧！
+        熬了不少夜晚写的，尊重一下劳动成果吧！
         <img src="../../../assets/image/WechatIMG25.png" style="width:200px;height:300px;margin-top: 20px"/>
         <el-input v-model="pay_pram.wachat_name" placeholder="请输入微信名,方便核对" size="small" clearable
                   class="search_input"></el-input>
