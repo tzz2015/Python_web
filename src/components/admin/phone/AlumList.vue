@@ -79,7 +79,7 @@
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" small v-if="isShowEdit(scope.row)" @click="addOrEditAlum(scope.row)">编辑</el-button>
-              <el-button type="text" small>复制链接</el-button>
+              <el-button type="text" small v-clipboard="'http://94.191.120.108:2587/?key='+scope.row.key"  v-clipboard:success="clipboardSuccessHandler" >复制链接</el-button>
               <el-button type="text" small v-if="isShowPayButton(scope.row)" @click="showPayDialog(scope.row)">打赏
               </el-button>
             </template>
@@ -236,6 +236,15 @@ export default {
     showPayDialog (row) {
       this.pay_pram.key = row.key
       this.payDialogVisible = true
+    },
+    // Success event handler
+    clipboardSuccessHandler ({ value, event }) {
+      console.log('success', value)
+      this.$message.success('已复制,请在微信、QQ或者其他手机浏览器打开')
+    },
+    // Error event handler
+    clipboardErrorHandler ({ value, event }) {
+      console.log('error', value)
     }
   }
 }

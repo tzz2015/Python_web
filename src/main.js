@@ -10,7 +10,9 @@ import ConstMange from './ConstMange.js'
 import RequestUtils from './RequestUtils'
 import store from './store'
 import vueCookie from 'vue-cookie'
+import Clipboard from 'v-clipboard'
 
+Vue.use(Clipboard)
 Vue.config.productionTip = false
 Vue.use(Element, { size: 'small', zIndex: 3000 });
 Vue.use(vueCookie)
