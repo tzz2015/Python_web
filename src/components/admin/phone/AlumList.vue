@@ -61,13 +61,13 @@
             </template>
           </el-table-column>
           <el-table-column
-            :filters="[{text: '已打赏', value: 0}, {text: '待审核', value: 2}, {text: '未打赏', value: 1}]"
+            :filters="[{text: '未打赏', value: 0}, {text: '待审核', value: 2}, {text: '已打赏', value: 1}]"
             :filter-method="filterHandler"
             v-if="isShowSearchBar()"
             label="打赏状态"
             width="120">
             <template slot-scope="scope">
-              <a v-if="scope.row.payInfo.pay_status===0">已打赏</a>
+              <a v-if="scope.row.payInfo.pay_status===1">已打赏</a>
               <a v-else-if="scope.row.payInfo.pay_status===2">待审核</a>
               <a v-else>未打赏</a>
             </template>
@@ -202,7 +202,7 @@ export default {
     },
     // 是否显示打赏
     isShowPayButton (row) {
-      return this.$store.state.id === row.user.id && row.payInfo.pay_status !== 0
+      return this.$store.state.id === row.user.id && row.payInfo.pay_status !== 1
     },
     // 是否显示编辑
     isShowEdit (row) {

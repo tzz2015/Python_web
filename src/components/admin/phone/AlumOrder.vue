@@ -41,7 +41,7 @@
             label="打赏状态"
             width="120">
             <template slot-scope="scope">
-              <a v-if="scope.row.pay_status===0">已打赏</a>
+              <a v-if="scope.row.pay_status===1">已打赏</a>
               <a v-else-if="scope.row.pay_status===2">待审核</a>
               <a v-else>未打赏</a>
             </template>
@@ -112,7 +112,7 @@ export default {
     pass (row) {
       const params = {
         key: row.alum.key,
-        pay_status: 0
+        pay_status: 1
       }
       const that = this
       this.$requestUtils.post(this, '/update_alum_order', params)
