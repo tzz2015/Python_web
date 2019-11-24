@@ -102,7 +102,7 @@ export default {
   data () {
     return {
       alumInfo: {
-        bg_url: '',
+        bg_url: 'https://tensee-1259402050.cos.ap-chengdu.myqcloud.com/WebApp/2019-11-24/defalt_bg.jpg',
         music_url: '',
         image_urls: []
       },

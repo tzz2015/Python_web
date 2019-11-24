@@ -68,7 +68,7 @@
             width="180">
             <template slot-scope="scope">
               <a :href="scope.row.image_urls[0]" target="_blank"><img :src="scope.row.image_urls[0]"
-                                                                      class="bg_image"></a>
+                                                                      class="photo_list"></a>
               <el-button type="text" small @click="showAllPhoto(scope.row.image_urls)">查看全部</el-button>
             </template>
           </el-table-column>
@@ -192,8 +192,8 @@ export default {
     },
     // 是否显示搜索
     isShowSearchBar () {
-      return true
-      // return this.$store.state.user_type !== 2
+      // return true
+      return this.$store.state.user_type !== 2
     },
     // 是否显示打赏
     isShowPayButton (row) {
@@ -254,6 +254,11 @@ export default {
   }
 
   .bg_image {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+  }
+  .photo_list {
     width: 150px;
     height: 150px;
     object-fit: cover;
