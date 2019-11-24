@@ -165,7 +165,6 @@ export default {
               this.alum_list.forEach(item => {
                 if (item.image_urls !== null) {
                   item.image_urls = item.image_urls.split(',')
-                  console.log(item.image_urls)
                 }
               })
             }
@@ -206,12 +205,18 @@ export default {
     },
     // 新增或者编辑相册
     addOrEditAlum (data) {
-      this.$router.push({
-        path: '/admin/EditAlum',
-        query: {
-          alumInfo: data
-        }
-      })
+      if (data) {
+        this.$router.replace({
+          path: '/admin/EditAlum',
+          query: {
+            alumInfo: data
+          }
+        })
+      } else {
+        this.$router.replace({
+          path: '/admin/EditAlum'
+        })
+      }
     },
     // 关闭相册展示dialog
     handleClose (done) {

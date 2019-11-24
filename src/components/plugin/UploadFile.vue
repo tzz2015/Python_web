@@ -1,6 +1,10 @@
 <template>
   <div>
     <el-upload
+      v-loading="loading"
+      element-loading-text="压缩中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
       v-if="limit!==1"
       ref="mainUpload"
       :action="uploadPath"
@@ -18,16 +22,22 @@
       <div slot="tip" class="el-upload__tip">{{ ptips }}</div>
     </el-upload>
     <el-upload
+      v-loading="loading"
+      element-loading-text="压缩中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
       v-if="limit===1"
       class="avatar-uploader"
       :action="uploadPath"
-      :show-file-list="false"
+      :multiple="false"
+      :show-file-list="this.imageType !== undefined"
+      :on-exceed="handleExceed"
       :on-success="handleSuccess"
       :on-remove="handleRemove"
       :on-preview="handlePreview"
       :file-list="pfileList"
       :before-upload="handleBeforeUpload">
-      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <img v-if="imageUrl&&this.imageType === undefined" :src="imageUrl" class="avatar">
       <div v-else class="avatar-uploader-icon">
         <i class="el-icon-plus"></i>
       </div>
@@ -42,12 +52,12 @@
 <script>
 import UrlUtils from '@/util/UrlUtils'
 import imageConversion from 'image-conversion'
+
 export default {
   created () {
     this.pbtnTitle = this.pbtnTitle ? this.pbtnTitle : '点击上传'
     this.plimit = this.plimit > 0 ? this.plimit : 1
     this.updateFileList()
-    console.log(process.env.API_HOST)
   },
   name: 'upload-file',
   props: {
@@ -70,7 +80,9 @@ export default {
     callbackTag: {},
     // 列表样式
     listType: String,
-    idName: String
+    idName: String,
+    // 是否为图片类型
+    imageType: true
   },
   data () {
     return {
@@ -82,7 +94,8 @@ export default {
       pfileList: [],
       imageUrl: '',
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      loading: false
     }
   },
   computed: {
@@ -106,7 +119,7 @@ export default {
   methods: {
     handleExceed (files, fileList) {
       this.$message({
-        message: '你选择了' + files.length + '张图片，此处限制最多传' + this.plimit + '张',
+        message: '你选择了' + files.length + '个文件，此处限制最多传' + this.plimit + '个',
         type: 'warning'
       })
     },
@@ -114,6 +127,7 @@ export default {
       if (this.limit === 1 && fileList.length > 1) {
         fileList = [fileList[fileList.length - 1]]
         this.didUploadFileList = []
+        this.loading = false
       }
       this.didUploadFileList.push(response)
       this.updateValue(fileList)
@@ -135,23 +149,26 @@ export default {
         this.$message.error('上传文件大小不能超过 20MB!')
         return false
       }
-      if (this.accept.match('jpg') && file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      if (this.accept.match('jpg') && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         this.$message({message: '图片格式只支持jpg或png', type: 'error'})
         return false
       }
       if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg') {
         let isLt2M = file.size / 1024 / 1024 < 5 // 判定图片大小是否小于10MB
         if (!isLt2M) {
+          let that = this
+          that.loading = true
           return new Promise((resolve, reject) => {
             imageConversion.compressAccurately(file, 2000).then(res => { // console.log(res)
               resolve(res)
+              that.loading = false
             })
           })
         }
       }
     },
     updateValue (list) {
-      var files = ''
+      let files = ''
       if (this.changeCallback) {
         if (list.length) {
           list = list.map(val => {
