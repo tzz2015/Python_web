@@ -38,18 +38,6 @@
             width="150">
           </el-table-column>
           <el-table-column
-            :filters="[{text: '已打赏', value: 0}, {text: '待审核', value: 2}, {text: '未打赏', value: 1}]"
-            :filter-method="filterHandler"
-            v-if="isShowSearchBar()"
-            label="打赏状态"
-            width="120">
-            <template slot-scope="scope">
-              <a v-if="scope.row.payInfo.pay_status===0">已打赏</a>
-              <a v-else-if="scope.row.payInfo.pay_status===2">待审核</a>
-              <a v-else>未打赏</a>
-            </template>
-          </el-table-column>
-          <el-table-column
             label="背景图片"
             width="180">
             <template slot-scope="scope">
@@ -73,13 +61,27 @@
             </template>
           </el-table-column>
           <el-table-column
+            :filters="[{text: '已打赏', value: 0}, {text: '待审核', value: 2}, {text: '未打赏', value: 1}]"
+            :filter-method="filterHandler"
+            v-if="isShowSearchBar()"
+            label="打赏状态"
+            width="120">
+            <template slot-scope="scope">
+              <a v-if="scope.row.payInfo.pay_status===0">已打赏</a>
+              <a v-else-if="scope.row.payInfo.pay_status===2">待审核</a>
+              <a v-else>未打赏</a>
+            </template>
+          </el-table-column>
+          <el-table-column
             align="center"
             fixed="right"
             width="160"
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" small v-if="isShowEdit(scope.row)" @click="addOrEditAlum(scope.row)">编辑</el-button>
-              <el-button type="text" small v-clipboard="alumHost+scope.row.key"  v-clipboard:success="clipboardSuccessHandler" >复制链接</el-button>
+              <el-button type="text" small v-clipboard="alumHost+scope.row.key"
+                         v-clipboard:success="clipboardSuccessHandler">复制链接
+              </el-button>
               <el-button type="text" small v-if="isShowPayButton(scope.row)" @click="showPayDialog(scope.row)">打赏
               </el-button>
             </template>
@@ -241,12 +243,12 @@ export default {
       this.payDialogVisible = true
     },
     // Success event handler
-    clipboardSuccessHandler ({ value, event }) {
+    clipboardSuccessHandler ({value, event}) {
       console.log('success', value)
       this.$message.success('已复制,请在微信、QQ或者其他手机浏览器打开')
     },
     // Error event handler
-    clipboardErrorHandler ({ value, event }) {
+    clipboardErrorHandler ({value, event}) {
       console.log('error', value)
     }
   }
@@ -270,6 +272,7 @@ export default {
     height: 180px;
     object-fit: cover;
   }
+
   .photo_list {
     width: 150px;
     height: 150px;
