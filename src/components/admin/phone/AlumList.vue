@@ -79,7 +79,7 @@
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" small v-if="isShowEdit(scope.row)" @click="addOrEditAlum(scope.row)">编辑</el-button>
-              <el-button type="text" small v-clipboard="'http://94.191.120.108:2587/?key='+scope.row.key"  v-clipboard:success="clipboardSuccessHandler" >复制链接</el-button>
+              <el-button type="text" small v-clipboard="alumHost+scope.row.key"  v-clipboard:success="clipboardSuccessHandler" >复制链接</el-button>
               <el-button type="text" small v-if="isShowPayButton(scope.row)" @click="showPayDialog(scope.row)">打赏
               </el-button>
             </template>
@@ -147,11 +147,14 @@ export default {
       // 当前图片集合
       curr_image_urls: [],
       // 打赏弹窗
-      payDialogVisible: false
+      payDialogVisible: false,
+      // 3D相册地址
+      alumHost: process.env.ALUM_HOST
     }
   },
   created () {
     this.doSearch()
+    console.log('alum:' + process.env.ALUM_HOST)
   },
   methods: {
     // 搜索列表
