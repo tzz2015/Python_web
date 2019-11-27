@@ -185,11 +185,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="登录密码" prop="password" size="small">
-          <el-input v-model="userInfo.password" size="small" placeholder="请输入登录密码" type="password"></el-input>
+          <el-input v-model="userInfo.password" size="small" placeholder="请输入登录密码" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="confirm_password" size="small">
-          <el-input v-model="userInfo.confirm_password" size="small" placeholder="请输入确认密码" type="password"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="确认密码" prop="confirm_password" size="small">
+          <el-input v-model="userInfo.confirm_password" size="small" placeholder="请输入确认密码" type="text"></el-input>
+        </el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
          <el-button @click="dialogVisible = false" size="small">取 消</el-button>
@@ -229,9 +229,6 @@ export default {
         ],
         password: [
           {required: true, message: '请输入登录密码', trigger: 'blur'}
-        ],
-        confirm_password: [
-          {required: true, message: '请输入确认密码', trigger: 'blur'}
         ],
         user_type: [
           {required: true, message: '请用户角色', trigger: 'change'}
@@ -324,8 +321,7 @@ export default {
         user_type: 2,
         menuIds: [],
         option: [],
-        password: '',
-        confirm_password: ''
+        password: ''
       }
     },
     // 编辑成员
@@ -338,7 +334,6 @@ export default {
         this.userInfo = {}
         this.userInfo = Object.assign({}, row)
         this.userInfo.password = '**dfd**87kjdk**dsdhjh388'
-        this.userInfo.confirm_password = '**dfd**87kjdk**dsdhjh388'
       })
     },
     // 新增或者编辑用户
@@ -346,11 +341,6 @@ export default {
       this.$refs.userInfo.validate((valid) => {
         if (valid) {
           let password = this.userInfo.password
-          // 判断密码是否相同
-          if (password && password !== this.userInfo.confirm_password) {
-            this.$comUtils.showErrorMessage(this, '两次输入的密码不一致')
-            return
-          }
           if (password === '**dfd**87kjdk**dsdhjh388') {
             this.userInfo.password = ''
           }

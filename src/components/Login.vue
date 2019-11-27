@@ -23,8 +23,8 @@ export default {
   data () {
     return {
       form: {
-        username: '刘宇飞',
-        password: '111'
+        username: '',
+        password: ''
       },
       rules: {
         username: [
